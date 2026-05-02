@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>항공권 예매 정보</title>
+    <style>
+        :root {
+            --bg-color: #f5f7fb;
+            --card-bg: #ffffff;
+            --text-main: #2b2d42;
+            --text-muted: #64748b;
+            --purple-main: #5b21b6;
+            --header-green: #eef6ec;
+            --btn-dark: #3b4554;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 40px;
+        }
+
+        /* 상단 네비게이션바 */
+        .nav-bar {
+            background-color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .back-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* 티켓 카드 공통 */
+        .ticket-card {
+            background-color: var(--card-bg);
+            margin: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 카드 헤더 (초록색 배경) */
+        .ticket-header {
+            background-color: var(--header-green);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d1d5db;
+        }
+        .ticket-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1f2937;
+        }
+        .cancel-btn {
+            background-color: var(--btn-dark);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 정보 행 (테이블 형태 구현) */
+        .info-row {
+            display: flex;
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 110px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .info-value {
+            flex-grow: 1;
+            font-size: 1rem;
+            word-break: keep-all;
+        }
+
+        /* 항공사 및 PNR */
+        .airline-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #334155;
+        }
+        .airline-logo { font-size: 0.9rem; }
+        .pnr-code {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--purple-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .pnr-sub {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: var(--text-main);
+        }
+
+        /* 여정 텍스트 (보라색 화살표) */
+        .route-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--purple-main);
+            margin-bottom: 15px;
+        }
+        .route-title span.duration {
+            font-size: 0.95rem;
+            font-weight: normal;
+        }
+
+        /* 타임라인 (세로 선 및 동그라미) */
+        .timeline {
+            position: relative;
+            padding-left: 18px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 25px;
+            width: 2px;
+            background-color: var(--purple-main);
+        }
+        .time-point {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .time-point:last-child {
+            margin-bottom: 0;
+        }
+        .time-point::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--purple-main);
+            border-radius: 50%;
+            background-color: white;
+            z-index: 1;
+        }
+        .airport-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+        .flight-time {
+            font-size: 0.95rem;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 네비게이션 -->
+    <div class="nav-bar">
+        <!-- 뒤로가기 누르면 원래 메인 인덱스로 돌아가도록 설정 -->
+        <a href="index.html" class="back-btn">⬅️</a>
+        <div class="nav-title">항공권 예매 정보</div>
+    </div>
+
+    <!-- 가는편 항공정보 -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">가는편 항공정보</div>
+            <button class="cancel-btn">예약취소</button>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">항공사예약번호</div>
+            <div class="info-value">
+                <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8025편</div>
+                <div class="pnr-code">KADQMX <span class="pnr-sub">(항공탑승시 필요)</span></div>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">여행사예약번호</div>
+            <div class="info-value" style="padding-top: 2px;">
+                CA2633304254 <br>
+                <span style="font-size: 0.9rem; color: var(--text-main);">(예약조회시 필요)</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">항공여정</div>
+            <div class="info-value">
+                <div class="route-title">김포 ➔ 제주 <span class="duration">(총 1시간25분 소요)</span></div>
+                
+                <div class="timeline">
+                    <div class="time-point">
+                        <div class="airport-name">김포(GMP)</div>
+                        <div class="flight-time">2026.05.03(일) 07:05 출발</div>
+                    </div>
+                    <div class="time-point">
+                        <div class="airport-name">제주(CJU)</div>
+                        <div class="flight-time">2026.05.03(일) 08:30 도착</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 오는편 항공정보 -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">오는편 항공정보</div>
+            <button class="cancel-btn">예약취소</button>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">항공사예약번호</div>
+            <div class="info-value">
+                <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8024편</div>
+                <div class="pnr-code">KC3BKJ <span class="pnr-sub">(항공탑승시 필요)</span></div>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">여행사예약번호</div>
+            <div class="info-value" style="padding-top: 2px;">
+                CA2633304254 <br>
+                <span style="font-size: 0.9rem; color: var(--text-main);">(예약조회시 필요)</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-label">항공여정</div>
+            <div class="info-value">
+                <div class="route-title">제주 ➔ 김포 <span class="duration">(총 1시간20분 소요)</span></div>
+                
+                <div class="timeline">
+                    <div class="time-point">
+                        <div class="airport-name">제주(CJU)</div>
+                        <div class="flight-time">2026.05.06(수) 20:40 출발</div>
+                    </div>
+                    <div class="time-point">
+                        <div class="airport-name">김포(GMP)</div>
+                        <div class="flight-time">2026.05.06(수) 22:00 도착</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

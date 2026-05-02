@@ -27,7 +27,7 @@
             overflow: hidden; 
         }
 
-        /* ================= 스플래시 화면 (앱 인트로) ================= */
+        /* ================= 스플래시 화면 (선 그리기 애니메이션) ================= */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -41,13 +41,40 @@
             transition: opacity 0.5s ease-out; /* 페이드아웃 효과 */
         }
         
-        .splash-logo {
-            font-size: 4rem;
+        .splash-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .draw-logo {
+            width: 220px;
+            height: 90px;
+            overflow: visible;
+        }
+
+        /* SHP 글자 선 그리기 효과 */
+        .draw-text {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+            font-size: 5rem;
             font-weight: 900;
-            letter-spacing: 1px;
-            text-align: center;
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            fill: transparent; /* 처음엔 투명하게 */
+            stroke: white; /* 선 색상 */
+            stroke-width: 2;
+            stroke-dasharray: 400; /* 선 길이 설정 */
+            stroke-dashoffset: 400; /* 선 밖으로 밀어내기 (숨김) */
+            /* 1초 동안 선을 그리고, 1초 뒤에 0.5초 동안 색을 채움 */
+            animation: drawLine 1s ease-in-out forwards, fillText 0.5s ease-in-out 1s forwards;
+        }
+
+        .splash-subtext {
+            font-size: 1.5rem;
+            font-weight: 500;
+            opacity: 0;
+            margin-top: -10px;
+            /* SHP가 완성될 쯤(1.1초) 위로 톡 튀어나옴 */
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.1s forwards;
         }
         
         .splash-footer {
@@ -56,14 +83,20 @@
             font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 2px;
-            opacity: 0.8;
-            animation: fadeIn 1s ease-in 0.3s forwards;
             opacity: 0;
+            animation: fadeIn 1s ease-in 1.5s forwards;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        /* 애니메이션 키프레임 */
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes fillText {
+            to { fill: white; stroke-width: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        }
+        @keyframes popUp {
+            0% { transform: translateY(15px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
         @keyframes fadeIn {
             to { opacity: 0.8; }
@@ -85,7 +118,7 @@
         }
 
         .header-title {
-            font-size: 1.35rem; /* 브랜드 네임처럼 보이게 폰트 크기 확대 */
+            font-size: 1.35rem;
             font-weight: 800;
             line-height: 1.4;
             flex: 1;
@@ -399,11 +432,14 @@
 </head>
 <body>
 
-    <!-- 앱 스플래시 화면 -->
+    <!-- 앱 스플래시 화면 (선 그리기 애니메이션) -->
     <div id="splash-screen">
-        <div class="splash-logo">
-            SHP<br>
-            <span style="font-size: 1.5rem; font-weight: 500;">by 제주</span>
+        <div class="splash-logo-container">
+            <!-- SVG를 이용해 텍스트에 선 그리기 애니메이션 적용 -->
+            <svg viewBox="0 0 200 80" class="draw-logo">
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" class="draw-text">SHP</text>
+            </svg>
+            <div class="splash-subtext">by 제주</div>
         </div>
         <div class="splash-footer">MADE BY SEHWAN PARK</div>
     </div>
@@ -767,8 +803,8 @@
                             <a href="https://map.naver.com/v5/search/카페루시아" target="_blank" class="map-link cafe" data-ko="카페 루시아 (오션뷰/젤라또)" data-zh="Cafe Lucia (海景/義式冰淇淋)">카페 루시아 (오션뷰/젤라또)</a>
                         </div>
                         <div class="tag-wrap">
-                            <input type="checkbox" class="route-check" data-name="중문별장" data-name-zh="中文別墅" data-loc="74">
-                            <a href="https://map.naver.com/v5/search/중문별장" target="_blank" class="map-link cafe" data-ko="중문별장 (커피/정원뷰)" data-zh="中文別墅 (咖啡/庭園景)">중문별장 (커피/정원뷰)</a>
+                            <input type="checkbox" class="route-check" data-name="중문별장" data-name-zh="中文별장" data-loc="74">
+                            <a href="https://map.naver.com/v5/search/중문별장" target="_blank" class="map-link cafe" data-ko="중문별장 (커피/정원뷰)" data-zh="中文별장 (커피/庭園景)">중문별장 (커피/정원뷰)</a>
                         </div>
                         <div class="tag-wrap">
                             <input type="checkbox" class="route-check" data-name="우유부단" data-name-zh="牛奶不丹" data-loc="89">
@@ -1161,7 +1197,7 @@
 
     <!-- 스크립트 -->
     <script>
-        // 스플래시 화면 제어 (1.5초 후 사라짐)
+        // 스플래시 화면 제어 (2.5초 후 사라짐 - 선 그리기 애니메이션 시간 고려)
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -1172,7 +1208,7 @@
                     splash.style.display = 'none';
                     document.body.style.overflow = 'auto'; 
                 }, 500); 
-            }, 1500); 
+            }, 2500); 
         });
 
         let isZh = false;

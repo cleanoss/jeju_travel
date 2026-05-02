@@ -8,12 +8,13 @@
         :root {
             --bg-color: #f5f7fb;
             --card-bg: #ffffff;
+            --primary: #2ac1bc;         /* 메인 테마색 (민트) */
+            --primary-dark: #1e9b97;    /* 글씨용 살짝 어두운 민트 */
             --text-main: #2b2d42;
-            --text-muted: #64748b;
-            --purple-main: #5b21b6;
-            --header-green: #eef6ec;
-            --header-orange: #fff7ed;
-            --orange-main: #ea580c;
+            --text-muted: #8d99ae;
+            --header-flight: #f0fdfa;   /* 항공권 헤더 연한 민트 배경 */
+            --header-rentcar: #fff5f0;  /* 렌트카 헤더 연한 코랄 배경 */
+            --rent-accent: #ff7e5f;     /* 렌트카 포인트색 (메인화면 일출버튼 색상) */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,56 +26,68 @@
             padding-bottom: 40px;
         }
 
-        /* 상단 네비게이션바 */
+        /* 상단 네비게이션바 (메인 화면과 동일하게 민트색 적용) */
         .nav-bar {
-            background-color: white;
+            background-color: var(--primary);
+            color: white;
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
         .back-btn {
             text-decoration: none;
-            color: var(--text-main);
+            color: white;
             font-size: 1.2rem;
             margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: background 0.2s;
         }
+        .back-btn:active { background: rgba(255, 255, 255, 0.4); }
+        
         .nav-title {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
         /* 카드 공통 및 토글 애니메이션 */
         .ticket-card {
             background-color: var(--card-bg);
             margin: 15px;
-            border-radius: 12px;
+            border-radius: 20px; /* 메인 화면과 동일한 라운드 */
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
         }
 
         .ticket-header {
-            background-color: var(--header-green);
+            background-color: var(--header-flight);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #d1d5db;
+            border-bottom: 1px solid #e2e8f0;
             cursor: pointer;
             user-select: none;
         }
         .ticket-header:active { background-color: #e4efe1; }
         
-        .ticket-header.rentcar { background-color: var(--header-orange); }
+        .ticket-header.rentcar { background-color: var(--header-rentcar); }
         .ticket-header.rentcar:active { background-color: #ffedd5; }
 
         .ticket-title {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #1f2937;
         }
@@ -87,36 +100,29 @@
 
         .toggle-icon {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: var(--primary);
             transition: transform 0.3s ease;
         }
+        .ticket-header.rentcar .toggle-icon { color: var(--rent-accent); }
 
         /* 접힘(Collapsed) 상태 설정 */
-        .ticket-card.collapsed .toggle-icon {
-            transform: rotate(0deg); 
-        }
-        .ticket-card:not(.collapsed) .toggle-icon {
-            transform: rotate(180deg); 
-        }
-        .ticket-card.collapsed .card-content {
-            display: none;
-        }
-        .ticket-card.collapsed .ticket-header {
-            border-bottom: none;
-        }
+        .ticket-card.collapsed .toggle-icon { transform: rotate(0deg); }
+        .ticket-card:not(.collapsed) .toggle-icon { transform: rotate(180deg); }
+        .ticket-card.collapsed .card-content { display: none; }
+        .ticket-card.collapsed .ticket-header { border-bottom: none; }
 
         /* 셔틀버스 버튼 */
         .shuttle-btn {
-            background-color: var(--orange-main);
+            background-color: var(--rent-accent);
             color: white;
             border: none;
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: 20px; /* 둥근 버튼으로 변경 */
             font-size: 0.85rem;
             font-weight: bold;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 2px 5px rgba(234, 88, 12, 0.3);
+            box-shadow: 0 2px 8px rgba(255, 126, 95, 0.3);
         }
         .shuttle-btn:active { transform: scale(0.97); }
 
@@ -124,16 +130,16 @@
         .info-row {
             display: flex;
             padding: 20px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px dashed #e2e8f0;
         }
         .info-row:last-child { border-bottom: none; }
         
         .info-label {
-            width: 100px;
-            font-size: 0.95rem;
+            width: 95px;
+            font-size: 0.9rem;
             color: var(--text-muted);
             flex-shrink: 0;
-            font-weight: 500;
+            font-weight: 700;
         }
         .info-value {
             flex-grow: 1;
@@ -148,26 +154,28 @@
             align-items: center;
             gap: 6px;
             font-size: 1rem;
-            margin-bottom: 5px;
-            color: #334155;
+            margin-bottom: 6px;
+            color: var(--text-main);
             flex-wrap: wrap;
+            font-weight: bold;
         }
         .airline-logo { font-size: 0.9rem; }
         
         .flight-search-btn {
             background-color: #f8fafc;
-            color: var(--purple-main);
+            color: var(--primary-dark);
             text-decoration: none;
             padding: 4px 10px;
             border-radius: 20px;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border: 1px solid #cbd5e1;
             display: inline-flex;
             align-items: center;
             gap: 4px;
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-left: 2px;
         }
         .flight-search-btn:active {
             background-color: #e2e8f0;
@@ -175,52 +183,57 @@
         }
 
         .highlight-code {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            color: var(--purple-main);
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
             gap: 5px;
             flex-wrap: wrap;
         }
-        .highlight-code.rentcar-code { color: var(--orange-main); }
-        .pnr-sub { font-size: 0.9rem; font-weight: normal; color: var(--text-main); }
+        .highlight-code.rentcar-code { color: var(--rent-accent); }
+        .pnr-sub { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 
-        /* 여정 텍스트 (보라색 화살표) */
+        /* 여정 텍스트 */
         .route-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 800;
-            color: var(--purple-main);
+            color: var(--primary-dark);
             margin-bottom: 15px;
+            background: #f1f5f9;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
         }
-        .route-title span.duration { font-size: 0.95rem; font-weight: normal; }
+        .route-title span.duration { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 
         /* 타임라인 (세로 선 및 동그라미) */
         .timeline {
             position: relative;
             padding-left: 18px;
+            margin-top: 5px;
         }
         .timeline::before {
-            content: ''; position: absolute; left: 5px; top: 8px; bottom: 25px; width: 2px; background-color: var(--purple-main);
+            content: ''; position: absolute; left: 5px; top: 8px; bottom: 25px; width: 2px; background-color: #cbd5e1;
         }
         .time-point {
             position: relative; margin-bottom: 25px;
         }
         .time-point:last-child { margin-bottom: 0; }
         .time-point::before {
-            content: ''; position: absolute; left: -18px; top: 4px; width: 12px; height: 12px; border: 2px solid var(--purple-main); border-radius: 50%; background-color: white; z-index: 1;
+            content: ''; position: absolute; left: -18px; top: 4px; width: 12px; height: 12px; border: 3px solid var(--primary); border-radius: 50%; background-color: white; z-index: 1;
         }
         .airport-name {
-            font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; color: #0f172a;
+            font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; color: var(--text-main);
         }
         .flight-time {
-            font-size: 0.95rem; color: #475569;
+            font-size: 0.9rem; color: var(--text-muted); font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <!-- 상단 네비게이션 -->
+    <!-- 상단 네비게이션 (메인과 동일한 테마) -->
     <div class="nav-bar">
         <a href="index.html" class="back-btn">⬅️</a>
         <div class="nav-title">✈️ 항공권 · 🚗 렌트카</div>
@@ -241,7 +254,6 @@
                 <div class="info-value">
                     <div class="airline-name">
                         <span class="airline-logo">✈️</span> 에어부산 
-                        <!-- 네이버 편명 검색 버튼 -->
                         <a href="https://search.naver.com/search.naver?query=BX8025" target="_blank" class="flight-search-btn">BX8025편 🔍</a>
                     </div>
                     <div class="highlight-code">KADQMX <span class="pnr-sub">(항공탑승시 필요)</span></div>
@@ -252,22 +264,22 @@
                 <div class="info-label">여행사번호</div>
                 <div class="info-value">
                     CA2633304254 <br>
-                    <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">(예약조회시 필요)</span>
                 </div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">항공여정</div>
                 <div class="info-value">
-                    <div class="route-title">김포 ➔ 제주 <span class="duration">(총 1시간25분 소요)</span></div>
+                    <div class="route-title">김포 ➔ 제주 <span class="duration">(총 1시간 25분)</span></div>
                     
                     <div class="timeline">
                         <div class="time-point">
-                            <div class="airport-name">김포(GMP)</div>
+                            <div class="airport-name">김포 (GMP)</div>
                             <div class="flight-time">2026.05.03(일) 07:05 출발</div>
                         </div>
                         <div class="time-point">
-                            <div class="airport-name">제주(CJU)</div>
+                            <div class="airport-name">제주 (CJU)</div>
                             <div class="flight-time">2026.05.03(일) 08:30 도착</div>
                         </div>
                     </div>
@@ -291,7 +303,6 @@
                 <div class="info-value">
                     <div class="airline-name">
                         <span class="airline-logo">✈️</span> 에어부산 
-                        <!-- 네이버 편명 검색 버튼 -->
                         <a href="https://search.naver.com/search.naver?query=BX8024" target="_blank" class="flight-search-btn">BX8024편 🔍</a>
                     </div>
                     <div class="highlight-code">KC3BKJ <span class="pnr-sub">(항공탑승시 필요)</span></div>
@@ -302,22 +313,22 @@
                 <div class="info-label">여행사번호</div>
                 <div class="info-value">
                     CA2633304254 <br>
-                    <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">(예약조회시 필요)</span>
                 </div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">항공여정</div>
                 <div class="info-value">
-                    <div class="route-title">제주 ➔ 김포 <span class="duration">(총 1시간20분 소요)</span></div>
+                    <div class="route-title">제주 ➔ 김포 <span class="duration">(총 1시간 20분)</span></div>
                     
                     <div class="timeline">
                         <div class="time-point">
-                            <div class="airport-name">제주(CJU)</div>
+                            <div class="airport-name">제주 (CJU)</div>
                             <div class="flight-time">2026.05.06(수) 20:40 출발</div>
                         </div>
                         <div class="time-point">
-                            <div class="airport-name">김포(GMP)</div>
+                            <div class="airport-name">김포 (GMP)</div>
                             <div class="flight-time">2026.05.06(수) 22:00 도착</div>
                         </div>
                     </div>
@@ -341,15 +352,15 @@
                 <div class="info-label">예약번호</div>
                 <div class="info-value">
                     <div class="highlight-code rentcar-code">260002369127</div>
-                    <div style="font-size: 0.9rem; color: #334155; margin-top: 4px;">예약자: 박세환 고객님</div>
+                    <div style="font-size: 0.9rem; color: var(--text-main); font-weight: bold; margin-top: 4px;">예약자: 박세환 고객님</div>
                 </div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">대여차량</div>
                 <div class="info-value">
-                    <b>토레스 가솔린</b><br>
-                    <span style="font-size: 0.9rem; color: var(--text-muted);">(자차보험: 완전자차)</span>
+                    <b style="font-size: 1.05rem;">토레스 가솔린</b><br>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">(자차보험: 완전자차)</span>
                 </div>
             </div>
 
@@ -357,12 +368,12 @@
                 <div class="info-label">이용일정</div>
                 <div class="info-value">
                     <div style="margin-bottom: 6px;">
-                        <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">대여</span>
-                        <b>26.05.03 (일) 09:00</b>
+                        <span style="display: inline-block; width: 35px; color: var(--text-muted); font-size: 0.85rem; font-weight: bold;">대여</span>
+                        <b style="color: var(--text-main);">26.05.03 (일) 09:00</b>
                     </div>
                     <div>
-                        <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">반납</span>
-                        <b>26.05.06 (수) 19:00</b>
+                        <span style="display: inline-block; width: 35px; color: var(--text-muted); font-size: 0.85rem; font-weight: bold;">반납</span>
+                        <b style="color: var(--text-main);">26.05.06 (수) 19:00</b>
                     </div>
                 </div>
             </div>
@@ -370,16 +381,16 @@
             <div class="info-row">
                 <div class="info-label">대여지점</div>
                 <div class="info-value">
-                    <b>제주지점</b><br>
-                    <span style="font-size: 0.85rem; color: var(--text-muted);">제주시 용담이동 730-10</span>
+                    <b style="font-size: 1.05rem;">제주지점</b><br>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">제주시 용담이동 730-10</span>
                 </div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">셔틀탑승</div>
                 <div class="info-value">
-                    제주공항 셔틀버스<br>
-                    <b style="color: var(--orange-main);">1구역 2승차장</b>
+                    <span style="font-weight: 600;">제주공항 셔틀버스</span><br>
+                    <b style="color: var(--rent-accent); font-size: 1.1rem; display: inline-block; margin-top: 2px;">1구역 2승차장</b>
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>항공권 · 렌트카 예매 정보</title>
+    <title>항공권 & 렌트카 예매 정보</title>
     <style>
         :root {
             --bg-color: #f5f7fb;
@@ -205,8 +205,8 @@
         <div class="nav-title">항공권 & 렌트카 정보</div>
     </div>
 
-    <!-- 가는편 항공정보 -->
-    <div class="ticket-card">
+    <!-- 가는편 항공정보 (기본 닫힘: collapsed 클래스 추가) -->
+    <div class="ticket-card collapsed">
         <div class="ticket-header" onclick="toggleCard(this)">
             <div class="ticket-title">🛫 가는편 항공정보</div>
             <div class="header-right">
@@ -251,8 +251,8 @@
         </div>
     </div>
 
-    <!-- 오는편 항공정보 -->
-    <div class="ticket-card">
+    <!-- 오는편 항공정보 (기본 닫힘: collapsed 클래스 추가) -->
+    <div class="ticket-card collapsed">
         <div class="ticket-header" onclick="toggleCard(this)">
             <div class="ticket-title">🛬 오는편 항공정보</div>
             <div class="header-right">
@@ -297,12 +297,11 @@
         </div>
     </div>
 
-    <!-- 렌트카 예약정보 -->
-    <div class="ticket-card">
+    <!-- 렌트카 예약정보 (기본 닫힘: collapsed 클래스 추가) -->
+    <div class="ticket-card collapsed">
         <div class="ticket-header rentcar" onclick="toggleCard(this)">
             <div class="ticket-title">🚗 SK렌터카 예약정보</div>
             <div class="header-right">
-                <!-- 버튼 클릭 시 카드가 접히지 않고 링크만 열리도록 event.stopPropagation() 적용 -->
                 <a href="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FetPgt1%2FbtsJ7P1sXFf%2FAAAAAAAAAAAAAAAAAAAAAGRGwPe7W07LYvPS-LsSiKNevxyzzzuwDdF-_tQw5EMi%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1780239599%26allow_ip%3D%26allow_referer%3D%26signature%3DN3Mdt3DIM%252FDSn1ER9tgsL1DWp4A%253D" target="_blank" class="shuttle-btn" onclick="event.stopPropagation()">🚌 셔틀시간표</a>
                 <div class="toggle-icon">▼</div>
             </div>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>제주 가족여행 스마트 가이드</title>
+    <style>
+        :root {
+            --bg-color: #f5f7fb;
+            --card-bg: #ffffff;
+            --primary: #2ac1bc; 
+            --text-main: #2b2d42;
+            --text-muted: #8d99ae;
+            --spot-bg: #e0f2fe; --spot-txt: #0284c7;
+            --food-bg: #fee2e2; --food-txt: #e11d48;
+            --cafe-bg: #fef3c7; --cafe-txt: #d97706;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            padding-bottom: 80px; 
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .header-btn-wrap {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #lang-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #lang-btn:active { background: rgba(255, 255, 255, 0.4); }
+
+        .container { padding: 15px; }
+
+        .util-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: transform 0.1s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .util-btn:active { transform: scale(0.98); }
+
+        .weather-btn {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+        }
+
+        .sunrise-btn {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 15px;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(255, 126, 95, 0.3);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .search-btn {
+            background-color: white;
+            color: var(--text-main);
+            padding: 12px 10px;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+            gap: 6px;
+        }
+        .search-btn span.emoji { font-size: 1.2rem; }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .day-info { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;}
+        .region-info { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; }
+        .weather-icon { font-size: 1.5rem; }
+
+        details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin: 15px 20px 5px 20px;
+            border: 1px solid #e2e8f0;
+        }
+        summary {
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '▼'; font-size: 0.8em; color: var(--primary); }
+        details[open] summary::after { content: '▲'; }
+        
+        .route-path {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: #334155;
+            line-height: 2.2;
+            padding-top: 10px;
+            border-top: 1px dashed #cbd5e1;
+            word-break: keep-all;
+        }
+        .route-path b { color: #0f172a; }
+        
+        .drive-time {
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin: 0 4px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .card-body { padding: 10px 20px 20px 20px; }
+
+        .category-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .route-check {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .map-link {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.1s;
+            display: inline-block;
+        }
+        .map-link:active { transform: scale(0.95); }
+
+        .spot { background-color: var(--spot-bg); color: var(--spot-txt); }
+        .food { background-color: var(--food-bg); color: var(--food-txt); }
+        .cafe { background-color: var(--cafe-bg); color: var(--cafe-txt); }
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .fab-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(42, 193, 188, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        .fab-btn:active { transform: scale(0.95); }
+        .badge {
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 22px; height: 22px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+        .modal-close {
+            background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #8d99ae; line-height: 1;
+        }
+        .route-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .route-item {
+            background: #f8fafc;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+        }
+        .route-arrow {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: -5px 0;
+        }
+        .route-number {
+            background: var(--primary);
+            color: white;
+            width: 26px; height: 26px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title" data-ko="✈️ 주식고수 박세환의<br>3박 4일 제주도 가족여행" data-zh="✈️ 股票高手朴世桓的<br>4天3夜 濟州島家族旅行">
+            ✈️ 주식고수 박세환의<br>3박 4일 제주도 가족여행
+        </div>
+        <div class="header-btn-wrap">
+            <button id="lang-btn" onclick="toggleLanguage()">🇹🇼 中文</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- 실시간 네이버 날씨 확인 버튼 -->
+        <a href="https://search.naver.com/search.naver?query=날씨" target="_blank" class="util-btn weather-btn">
+            <span data-ko="🌤️ 현재 날씨" data-zh="🌤️ 目前天氣">🌤️ 현재 날씨</span>
+        </a>
+
+        <!-- 일출/일몰 시간 확인 버튼 -->
+        <a href="https://www.badatime.com/67/sunrise-set" target="_blank" class="util-btn sunrise-btn">
+            <span data-ko="🌅 오늘의 제주 일출·일몰 시간" data-zh="🌅 今日濟州日出·日落時間">🌅 오늘의 제주 일출·일몰 시간</span>
+        </a>
+
+        <!-- 내 주변 네이버 지도 검색 버튼 -->
+        <div class="search-grid">
+            <a href="https://map.naver.com/v5/search/하나로마트" target="_blank" class="util-btn search-btn">
+                <span class="emoji">🛒</span> <span data-ko="주변 하나로마트" data-zh="附近 Hanaro超市">주변 하나로마트</span>
+            </a>
+            <a href="https://map.naver.com/v5/search/편의점" target="_blank" class="util-btn search-btn">
+                <span class="emoji">🏪</span> <span data-ko="주변 편의점" data-zh="附近便利商店">주변 편의점</span>
+            </a>
+            <a href="https://map.naver.com/v5/search/카페" target="_blank" class="util-btn search-btn">
+                <span class="emoji">☕</span> <span data-ko="주변 카페" data-zh="附近咖啡廳">주변 카페</span>
+            </a>
+            <a href="https://map.naver.com/v5/search/음식점" target="_blank" class="util-btn search-btn">
+                <span class="emoji">🍲</span> <span data-ko="주변 맛집" data-zh="附近美食">주변 맛집</span>
+            </a>
+        </div>
+
+        <!-- ================= 1일차 ================= -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="day-info" data-ko="1일차 (5/3 금)" data-zh="第1天 (5/3 五)">1일차 (5/3 금)</div>
+                    <div class="region-info" data-ko="제주공항 ~ 동부 ~ 숙소" data-zh="濟州機場 ~ 東部 ~ 住宿">제주공항 ~ 동부 ~ 숙소</div>
+                </div>
+                <div class="weather-icon">☔</div>
+            </div>
+            
+            <details>
+                <summary data-ko="🗺️ 관광지 이동 코스 및 소요시간 (클릭)" data-zh="🗺️ 景點移動路線與所需時間 (點擊)">🗺️ 관광지 이동 코스 및 소요시간 (클릭)</summary>
+                <div class="route-path">
+                    <b><span data-ko="제주공항" data-zh="濟州機場">제주공항</span></b>
+                    <span class="drive-time" data-ko="(🚗 약 50분)" data-zh="(🚗 約50分)">(🚗 약 50분)</span> ➔ 
+                    <span data-ko="여미지식물원" data-zh="如美地植物園">여미지식물원</span>
+                    <span class="drive-time" data-ko="(🚗 약 1시간 10분)" data-zh="(🚗 約1小時10分)">(🚗 약 1시간 10분)</span> ➔ 
+                    <span data-ko="만장굴" data-zh="萬丈窟">만장굴</span>
+                    <span class="drive-time" data-ko="(🚗 약 15분)" data-zh="(🚗 約15分)">(🚗 약 15분)</span> ➔ 
+                    <span data-ko="비자림" data-zh="榧子林">비자림</span>
+                    <span class="drive-time" data-ko="(🚗 약 30분)" data-zh="(🚗 約30分)">(🚗 약 30분)</span> ➔ 
+                    <b><span data-ko="숙소(휘닉스 아일랜드)" data-zh="住宿(鳳凰島飯店)">숙소(휘닉스 아일랜드)</span></b>
+                </div>
+            </details>
+
+            <div class="card-body">
+                <div class="category-title" data-ko="📍 관광지 & 대안 (우천 대비 실내위주)" data-zh="📍 景點 & 備案 (雨天室內為主)">📍 관광지 & 대안 (우천 대비 실내위주)</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="여미지식물원" data-name-zh="如美地植物園" data-loc="77">
+                        <a href="https://map.naver.com/v5/search/제주여미지식물원" target="_blank" class="map-link spot" data-ko="여미지식물원" data-zh="如美地植物園">여미지식물원</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="만장굴" data-name-zh="萬丈窟" data-loc="25">
+                        <a href="https://map.naver.com/v5/search/만장굴" target="_blank" class="map-link spot" data-ko="만장굴" data-zh="萬丈窟">만장굴</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="비자림" data-name-zh="榧子林" data-loc="28">
+                        <a href="https://map.naver.com/v5/search/제주비자림" target="_blank" class="map-link spot" data-ko="비자림" data-zh="榧子林">비자림</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="김녕해수욕장" data-name-zh="金寧海水浴場" data-loc="20">
+                        <a href="https://map.naver.com/v5/search/김녕해수욕장" target="_blank" class="map-link spot" data-ko="김녕해수욕장" data-zh="金寧海水浴場">김녕해수욕장</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="🍲 식당 선택지" data-zh="🍲 餐廳選擇">🍲 식당 선택지</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="제주동문시장" data-name-zh="濟州東門市場" data-loc="7">
+                        <a href="https://map.naver.com/v5/search/제주동문재래시장" target="_blank" class="map-link food" data-ko="제주동문시장 (길거리 음식/회)" data-zh="濟州東門市場 (街頭小吃/生魚片)">제주동문시장 (길거리 음식/회)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="우진해장국" data-name-zh="禹進解酒湯" data-loc="4">
+                        <a href="https://map.naver.com/v5/search/제주우진해장국" target="_blank" class="map-link food" data-ko="우진해장국 (고사리육개장/몸국)" data-zh="禹進解酒湯 (蕨菜牛肉湯/馬尾藻湯)">우진해장국 (고사리육개장/몸국)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="대우정" data-name-zh="大友亭" data-loc="2">
+                        <a href="https://map.naver.com/v5/search/대우정" target="_blank" class="map-link food" data-ko="대우정 (전복돌솥밥)" data-zh="大友亭 (鮑魚石鍋飯)">대우정 (전복돌솥밥)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="김녕빗소리" data-name-zh="金寧雨聲" data-loc="21">
+                        <a href="https://map.naver.com/v5/search/김녕빗소리" target="_blank" class="map-link food" data-ko="김녕빗소리 (튀김/우동)" data-zh="金寧雨聲 (炸物/烏冬麵)">김녕빗소리 (튀김/우동)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="제주미담" data-name-zh="濟州美談" data-loc="5">
+                        <a href="https://map.naver.com/v5/search/제주미담" target="_blank" class="map-link food" data-ko="제주미담 (고기국수)" data-zh="濟州美談 (豬肉湯麵)">제주미담 (고기국수)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="제주김만복본점" data-name-zh="濟州金萬福 本店" data-loc="3">
+                        <a href="https://map.naver.com/v5/search/제주김만복본점" target="_blank" class="map-link food" data-ko="제주김만복 본점 (전복김밥 포장)" data-zh="濟州金萬福 本店 (鮑魚飯捲 外帶)">제주김만복 본점 (전복김밥 포장)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="공평옥" data-name-zh="公平屋" data-loc="6">
+                        <a href="https://map.naver.com/v5/search/공평옥" target="_blank" class="map-link food" data-ko="공평옥 (설렁탕/냉면)" data-zh="公平屋 (雪濃湯/冷麵)">공평옥 (설렁탕/냉면)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="돌담통닭" data-name-zh="石牆炸雞" data-loc="15">
+                        <a href="https://map.naver.com/v5/search/돌담통닭함덕점" target="_blank" class="map-link food" data-ko="돌담통닭 (해물야채치킨)" data-zh="石牆炸雞 (海鮮蔬菜炸雞)">돌담통닭 (해물야채치킨)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="부촌식당" data-name-zh="富村餐廳" data-loc="44">
+                        <a href="https://map.naver.com/v5/search/성산부촌식당" target="_blank" class="map-link food" data-ko="부촌 (갈치조림정식)" data-zh="富村 (燉帶魚套餐)">부촌 (갈치조림정식)</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="☕ 카페 & 디저트" data-zh="☕ 咖啡廳 & 甜點">☕ 카페 & 디저트</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="스타벅스 송당파크" data-name-zh="星巴克 松堂公園店" data-loc="32">
+                        <a href="https://map.naver.com/v5/search/스타벅스더제주송당파크R점" target="_blank" class="map-link cafe" data-ko="스타벅스 송당파크" data-zh="星巴克 松堂公園店">스타벅스 송당파크</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="카페오른" data-name-zh="Cafe Orrrn" data-loc="38">
+                        <a href="https://map.naver.com/v5/search/카페오른" target="_blank" class="map-link cafe" data-ko="카페 오른 (오션뷰 베이커리)" data-zh="Cafe Orrrn (海景烘焙坊)">카페 오른 (오션뷰 베이커리)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="스누피가든" data-name-zh="史努比庭園" data-loc="30">
+                        <a href="https://map.naver.com/v5/search/스누피가든" target="_blank" class="map-link cafe" data-ko="스누피가든" data-zh="史努比庭園">스누피가든</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="지름집" data-name-zh="Jireum家" data-loc="33">
+                        <a href="https://map.naver.com/v5/search/제주지름집" target="_blank" class="map-link cafe" data-ko="지름집 (찐빵)" data-zh="Jireum家 (蒸包)">지름집 (찐빵)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 2일차 ================= -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="day-info" data-ko="2일차 (5/4 토)" data-zh="第2天 (5/4 六)">2일차 (5/4 토)</div>
+                    <div class="region-info" data-ko="성산 ~ 표선 ~ 서귀포 남부" data-zh="城山 ~ 表善 ~ 西歸浦南部">성산 ~ 표선 ~ 서귀포 남부</div>
+                </div>
+                <div class="weather-icon">☀️</div>
+            </div>
+
+            <details>
+                <summary data-ko="🗺️ 관광지 이동 코스 및 소요시간 (클릭)" data-zh="🗺️ 景點移動路線與所需時間 (點擊)">🗺️ 관광지 이동 코스 및 소요시간 (클릭)</summary>
+                <div class="route-path">
+                    <b><span data-ko="숙소" data-zh="住宿">숙소</span></b>
+                    <span class="drive-time" data-ko="(🚗 10분)" data-zh="(🚗 10分)">(🚗 10분)</span> ➔ 
+                    <span data-ko="성산일출봉" data-zh="城山日出峰">성산일출봉</span>
+                    <span class="drive-time" data-ko="(🚗 50분)" data-zh="(🚗 50分)">(🚗 50분)</span> ➔ 
+                    <span data-ko="쇠소깍" data-zh="牛沼河口">쇠소깍</span>
+                    <span class="drive-time" data-ko="(🚗 15분)" data-zh="(🚗 15分)">(🚗 15분)</span> ➔ 
+                    <span data-ko="올레시장" data-zh="偶來市場">올레시장</span>
+                    <span class="drive-time" data-ko="(🚗 1시간)" data-zh="(🚗 1小時)">(🚗 1시간)</span> ➔ 
+                    <b><span data-ko="숙소 복귀" data-zh="返回住宿">숙소 복귀</span></b>
+                </div>
+            </details>
+
+            <div class="card-body">
+                <div class="category-title" data-ko="📍 관광지 & 대안" data-zh="📍 景點 & 備案">📍 관광지 & 대안</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="성산일출봉" data-name-zh="城山日出峰" data-loc="40">
+                        <a href="https://map.naver.com/v5/search/성산일출봉" target="_blank" class="map-link spot" data-ko="성산일출봉" data-zh="城山日出峰">성산일출봉</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="일출봉 유채밭" data-name-zh="日出峰油菜花田" data-loc="41">
+                        <a href="https://map.naver.com/v5/search/성산유채꽃밭" target="_blank" class="map-link spot" data-ko="일출봉 유채밭" data-zh="日出峰油菜花田">일출봉 유채밭</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="쇠소깍" data-name-zh="牛沼河口" data-loc="60">
+                        <a href="https://map.naver.com/v5/search/쇠소깍" target="_blank" class="map-link spot" data-ko="쇠소깍" data-zh="牛沼河口">쇠소깍</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="광치기해변" data-name-zh="廣其其海灘" data-loc="42">
+                        <a href="https://map.naver.com/v5/search/광치기해변" target="_blank" class="map-link spot" data-ko="광치기해변" data-zh="廣其其海灘">광치기해변</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="🍲 식당 선택지" data-zh="🍲 餐廳選擇">🍲 식당 선택지</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="서귀포올레시장" data-name-zh="西歸浦偶來市場" data-loc="65">
+                        <a href="https://map.naver.com/v5/search/서귀포매일올레시장" target="_blank" class="map-link food" data-ko="서귀포올레시장 (먹거리/회포장)" data-zh="西歸浦偶來市場 (美食/生魚片外帶)">서귀포올레시장 (먹거리/회포장)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="한라산아래첫마을" data-name-zh="漢拏山下的第一個村莊" data-loc="50">
+                        <a href="https://map.naver.com/v5/search/한라산아래첫마을표선점" target="_blank" class="map-link food" data-ko="한라산아래첫마을 (메밀국수)" data-zh="漢拏山下的第一個村莊 (濟州蕎麥麵)">한라산아래첫마을 (메밀국수)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="해월정" data-name-zh="海月亭" data-loc="48">
+                        <a href="https://map.naver.com/v5/search/해월정" target="_blank" class="map-link food" data-ko="해월정 (보말칼국수/죽)" data-zh="海月亭 (海螺刀削麵/粥)">해월정 (보말칼국수/죽)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="만나식당" data-name-zh="Manna餐廳" data-loc="45">
+                        <a href="https://map.naver.com/v5/search/성산만나식당" target="_blank" class="map-link food" data-ko="만나식당 (갈치조림)" data-zh="Manna餐廳 (燉帶魚)">만나식당 (갈치조림)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="종달수다뜰" data-name-zh="終達聊天庭院" data-loc="36">
+                        <a href="https://map.naver.com/v5/search/종달수다뜰" target="_blank" class="map-link food" data-ko="종달수다뜰 (전복밥/갈치)" data-zh="終達聊天庭院 (鮑魚飯/帶魚)">종달수다뜰 (전복밥/갈치)</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="☕ 카페 & 디저트" data-zh="☕ 咖啡廳 & 甜點">☕ 카페 & 디저트</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="프릳츠 성산" data-name-zh="Fritz 城山" data-loc="43">
+                        <a href="https://map.naver.com/v5/search/프릳츠제주성산점" target="_blank" class="map-link cafe" data-ko="프릳츠 성산 (커피/베이커리)" data-zh="Fritz 城山 (咖啡/烘焙)">프릳츠 성산 (커피/베이커리)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="할머니떡집" data-name-zh="奶奶年糕店" data-loc="66">
+                        <a href="https://map.naver.com/v5/search/서귀포할머니떡집" target="_blank" class="map-link cafe" data-ko="할머니떡집 (올레시장 내)" data-zh="奶奶年糕店 (偶來市場內)">할머니떡집 (올레시장 내)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="서귀포귤메달" data-name-zh="橘子獎牌" data-loc="67">
+                        <a href="https://map.naver.com/v5/search/서귀포귤메달" target="_blank" class="map-link cafe" data-ko="귤메달 (착즙 귤주스)" data-zh="橘子獎牌 (鮮榨橘子汁)">귤메달 (착즙 귤주스)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="목장카페 밭디" data-name-zh="牧場咖啡 Batdi" data-loc="52">
+                        <a href="https://map.naver.com/v5/search/목장카페밭디" target="_blank" class="map-link cafe" data-ko="목장카페 밭디 (승마체험/커피)" data-zh="牧場咖啡 Batdi (騎馬體驗/咖啡)">목장카페 밭디 (승마체험/커피)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 3일차 ================= -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="day-info" data-ko="3일차 (5/5 일)" data-zh="第3天 (5/5 日)">3일차 (5/5 일)</div>
+                    <div class="region-info" data-ko="중문 ~ 안덕 ~ 서부" data-zh="中文 ~ 安德 ~ 西部">중문 ~ 안덕 ~ 서부</div>
+                </div>
+                <div class="weather-icon">☀️</div>
+            </div>
+
+            <details>
+                <summary data-ko="🗺️ 관광지 이동 코스 및 소요시간 (클릭)" data-zh="🗺️ 景點移動路線與所需時間 (點擊)">🗺️ 관광지 이동 코스 및 소요시간 (클릭)</summary>
+                <div class="route-path">
+                    <b><span data-ko="숙소" data-zh="住宿">숙소</span></b>
+                    <span class="drive-time" data-ko="(🚗 1시간 10분)" data-zh="(🚗 1小時10分)">(🚗 1시간 10분)</span> ➔ 
+                    <span data-ko="대포주상절리대" data-zh="大浦柱狀節理帶">대포주상절리대</span>
+                    <span class="drive-time" data-ko="(🚗 35분)" data-zh="(🚗 35分)">(🚗 35분)</span> ➔ 
+                    <span data-ko="성이시돌목장" data-zh="聖伊始石牧場">성이시돌목장</span>
+                    <span class="drive-time" data-ko="(🚗 15분)" data-zh="(🚗 15分)">(🚗 15분)</span> ➔ 
+                    <span data-ko="금오름" data-zh="金岳">금오름</span>
+                    <span class="drive-time" data-ko="(🚗 1시간 10분)" data-zh="(🚗 1小時10分)">(🚗 1시간 10분)</span> ➔ 
+                    <b><span data-ko="숙소 복귀" data-zh="返回住宿">숙소 복귀</span></b>
+                </div>
+            </details>
+
+            <div class="card-body">
+                <div class="category-title" data-ko="📍 관광지 & 대안" data-zh="📍 景點 & 備案">📍 관광지 & 대안</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="대포주상절리대" data-name-zh="大浦柱狀節理帶" data-loc="70">
+                        <a href="https://map.naver.com/v5/search/대포주상절리대" target="_blank" class="map-link spot" data-ko="대포주상절리대" data-zh="大浦柱狀節理帶">대포주상절리대</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="천제연폭포" data-name-zh="天帝淵瀑布" data-loc="78">
+                        <a href="https://map.naver.com/v5/search/천제연폭포" target="_blank" class="map-link spot" data-ko="천제연폭포" data-zh="天帝淵瀑布">천제연폭포</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="성이시돌목장" data-name-zh="聖伊始石牧場" data-loc="88">
+                        <a href="https://map.naver.com/v5/search/성이시돌목장" target="_blank" class="map-link spot" data-ko="성이시돌목장" data-zh="聖伊始石牧場">성이시돌목장</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="금오름" data-name-zh="金岳" data-loc="90">
+                        <a href="https://map.naver.com/v5/search/금오름" target="_blank" class="map-link spot" data-ko="금오름" data-zh="金岳">금오름</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="약천사" data-name-zh="藥泉寺" data-loc="76">
+                        <a href="https://map.naver.com/v5/search/약천사" target="_blank" class="map-link spot" data-ko="약천사" data-zh="藥泉寺">약천사</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="🍲 식당 선택지" data-zh="🍲 餐廳選擇">🍲 식당 선택지</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="수두리보말칼국수" data-name-zh="秀頭里海螺刀削麵" data-loc="71">
+                        <a href="https://map.naver.com/v5/search/중문수두리보말칼국수" target="_blank" class="map-link food" data-ko="수두리보말칼국수" data-zh="秀頭里海螺刀削麵">수두리보말칼국수</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="미영이네 식당" data-name-zh="美英家餐廳" data-loc="82">
+                        <a href="https://map.naver.com/v5/search/미영이네식당" target="_blank" class="map-link food" data-ko="미영이네 식당 (고등어회)" data-zh="美英家餐廳 (鯖魚生魚片)">미영이네 식당 (고등어회)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="중문고등어쌈밥" data-name-zh="中文鯖魚包飯" data-loc="72">
+                        <a href="https://map.naver.com/v5/search/중문고등어쌈밥" target="_blank" class="map-link food" data-ko="중문고등어쌈밥" data-zh="中文鯖魚包飯">중문고등어쌈밥</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="이재모피자" data-name-zh="李在模披薩" data-loc="75">
+                        <a href="https://map.naver.com/v5/search/이재모피자제주점" target="_blank" class="map-link food" data-ko="이재모피자" data-zh="李在模披薩">이재모피자</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="☕ 카페 & 디저트" data-zh="☕ 咖啡廳 & 甜點">☕ 카페 & 디저트</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="카페 루시아" data-name-zh="Cafe Lucia" data-loc="80">
+                        <a href="https://map.naver.com/v5/search/카페루시아" target="_blank" class="map-link cafe" data-ko="카페 루시아 (오션뷰/젤라또)" data-zh="Cafe Lucia (海景/義式冰淇淋)">카페 루시아 (오션뷰/젤라또)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="중문별장" data-name-zh="中文別墅" data-loc="74">
+                        <a href="https://map.naver.com/v5/search/중문별장" target="_blank" class="map-link cafe" data-ko="중문별장 (커피/정원뷰)" data-zh="中文別墅 (咖啡/庭園景)">중문별장 (커피/정원뷰)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="우유부단" data-name-zh="牛奶不丹" data-loc="89">
+                        <a href="https://map.naver.com/v5/search/우유부단" target="_blank" class="map-link cafe" data-ko="우유부단 (아이스크림)" data-zh="牛奶不丹 (冰淇淋)">우유부단 (아이스크림)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 4일차 ================= -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="day-info" data-ko="4일차 (5/6 월)" data-zh="第4天 (5/6 一)">4일차 (5/6 월)</div>
+                    <div class="region-info" data-ko="서남부 ~ 북서부 ~ 공항" data-zh="西南部 ~ 西北部 ~ 機場">서남부 ~ 북서부 ~ 공항</div>
+                </div>
+                <div class="weather-icon">☀️</div>
+            </div>
+
+            <details>
+                <summary data-ko="🗺️ 관광지 이동 코스 및 소요시간 (클릭)" data-zh="🗺️ 景點移動路線與所需時間 (點擊)">🗺️ 관광지 이동 코스 및 소요시간 (클릭)</summary>
+                <div class="route-path">
+                    <b><span data-ko="숙소(체크아웃)" data-zh="住宿(退房)">숙소(체크아웃)</span></b>
+                    <span class="drive-time" data-ko="(🚗 1시간 10분)" data-zh="(🚗 1小時10分)">(🚗 1시간 10분)</span> ➔ 
+                    <span data-ko="오설록 티 뮤지엄" data-zh="O'sulloc 綠茶博物館">오설록 티 뮤지엄</span>
+                    <span class="drive-time" data-ko="(🚗 10분)" data-zh="(🚗 10分)">(🚗 10분)</span> ➔ 
+                    <span data-ko="이끼숲소길" data-zh="苔蘚森林小路">이끼숲소길</span>
+                    <span class="drive-time" data-ko="(🚗 40분)" data-zh="(🚗 40分)">(🚗 40분)</span> ➔ 
+                    <b><span data-ko="제주공항(17:30)" data-zh="濟州機場(17:30)">제주공항(17:30)</span></b>
+                </div>
+            </details>
+
+            <div class="card-body">
+                <div class="category-title" data-ko="📍 관광지 & 대안" data-zh="📍 景點 & 備案">📍 관광지 & 대안</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="오설록 티 뮤지엄" data-name-zh="O'sulloc 綠茶博物館" data-loc="86">
+                        <a href="https://map.naver.com/v5/search/오설록티뮤지엄" target="_blank" class="map-link spot" data-ko="오설록 티 뮤지엄" data-zh="O'sulloc 綠茶博物館">오설록 티 뮤지엄</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="이끼숲소길" data-name-zh="苔蘚森林小路" data-loc="95">
+                        <a href="https://map.naver.com/v5/search/이끼숲소길" target="_blank" class="map-link spot" data-ko="이끼숲소길" data-zh="苔蘚森林小路">이끼숲소길</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="김창열미술관" data-name-zh="金昌烈美術館" data-loc="91">
+                        <a href="https://map.naver.com/v5/search/제주도립김창열미술관" target="_blank" class="map-link spot" data-ko="김창열미술관" data-zh="金昌烈美術館">김창열미술관</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="한림공원" data-name-zh="翰林公園" data-loc="92">
+                        <a href="https://map.naver.com/v5/search/한림공원" target="_blank" class="map-link spot" data-ko="한림공원" data-zh="翰林公園">한림공원</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="🍲 식당 선택지" data-zh="🍲 餐廳選擇">🍲 식당 선택지</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="제주동문시장" data-name-zh="濟州東門市場" data-loc="7">
+                        <a href="https://map.naver.com/v5/search/제주동문재래시장" target="_blank" class="map-link food" data-ko="제주동문시장 (먹거리/기념품)" data-zh="濟州東門市場 (美食/伴手禮)">제주동문시장 (먹거리/기념품)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="동귀리갈칫집" data-name-zh="東歸里帶魚店" data-loc="97">
+                        <a href="https://map.naver.com/v5/search/동귀리갈칫집" target="_blank" class="map-link food" data-ko="동귀리갈칫집 (갈치구이 정식)" data-zh="東歸里帶魚店 (烤帶魚套餐)">동귀리갈칫집 (갈치구이 정식)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="통일가든" data-name-zh="統一花園" data-loc="94">
+                        <a href="https://map.naver.com/v5/search/제주통일가든" target="_blank" class="map-link food" data-ko="통일가든 (콩국수/열무국수)" data-zh="統一花園 (豆漿麵/蘿蔔水冷麵)">통일가든 (콩국수/열무국수)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="오설록 말차누들바" data-name-zh="O'sulloc 抹茶麵吧" data-loc="87">
+                        <a href="https://map.naver.com/v5/search/오설록말차누들바" target="_blank" class="map-link food" data-ko="오설록 말차누들바 (말차 국수)" data-zh="O'sulloc 抹茶麵吧 (抹茶麵)">오설록 말차누들바 (말차 국수)</a>
+                    </div>
+                </div>
+
+                <div class="category-title" data-ko="☕ 카페 & 디저트" data-zh="☕ 咖啡廳 & 甜點">☕ 카페 & 디저트</div>
+                <div class="tags-container">
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="제주당 베이커리" data-name-zh="濟州堂烘焙坊" data-loc="96">
+                        <a href="https://map.naver.com/v5/search/제주당베이커리카페" target="_blank" class="map-link cafe" data-ko="제주당 베이커리 (대형 팜 카페)" data-zh="濟州堂烘焙坊 (大型農場咖啡廳)">제주당 베이커리 (대형 팜 카페)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="운화당" data-name-zh="雲花堂" data-loc="8">
+                        <a href="https://map.naver.com/v5/search/제주운화당" target="_blank" class="map-link cafe" data-ko="운화당 (선물용 과일모찌)" data-zh="雲花堂 (伴手禮水果麻糬)">운화당 (선물용 과일모찌)</a>
+                    </div>
+                    <div class="tag-wrap">
+                        <input type="checkbox" class="route-check" data-name="아베베 베이커리" data-name-zh="Abebe 烘焙坊" data-loc="7">
+                        <a href="https://map.naver.com/v5/search/아베베베이커리" target="_blank" class="map-link cafe" data-ko="아베베 베이커리 (크림 도넛)" data-zh="Abebe 烘焙坊 (奶油甜甜圈)">아베베 베이커리 (크림 도넛)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 하단 플로팅 버튼 (경로 검색) -->
+    <div class="fab-container">
+        <button class="fab-btn" onclick="showOptimalRoute()">
+            <span data-ko="🗺️ 선택한 장소 경로 보기" data-zh="🗺️ 查看所選景點路線">🗺️ 선택한 장소 경로 보기</span>
+            <span class="badge" id="route-count">0</span>
+        </button>
+    </div>
+
+    <!-- 추천 경로 팝업(모달) -->
+    <div class="modal-overlay" id="route-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span data-ko="🚗 추천 최단 경로 (동선순)" data-zh="🚗 推薦最短路線 (依動線)">🚗 추천 최단 경로 (동선순)</span>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="route-list" id="route-list">
+                <!-- Javascript에서 선택한 항목들이 동적으로 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 -->
+    <script>
+        let isZh = false;
+        
+        function toggleLanguage() {
+            isZh = !isZh;
+            const langBtn = document.getElementById('lang-btn');
+            langBtn.innerText = isZh ? '🇰🇷 한글' : '🇹🇼 中文';
+            
+            const transElements = document.querySelectorAll('[data-ko]');
+            transElements.forEach(el => {
+                el.innerHTML = isZh ? el.getAttribute('data-zh') : el.getAttribute('data-ko');
+            });
+        }
+
+        const checkboxes = document.querySelectorAll('.route-check');
+        const badge = document.getElementById('route-count');
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checkedCount = document.querySelectorAll('.route-check:checked').length;
+                badge.innerText = checkedCount;
+            });
+        });
+
+        function showOptimalRoute() {
+            const checkedInputs = Array.from(document.querySelectorAll('.route-check:checked'));
+            
+            if (checkedInputs.length === 0) {
+                alert(isZh ? "請選擇您想去的景點和餐廳。" : "가고 싶은 장소를 먼저 선택해주세요.");
+                return;
+            }
+
+            checkedInputs.sort((a, b) => parseInt(a.dataset.loc) - parseInt(b.dataset.loc));
+
+            const routeList = document.getElementById('route-list');
+            routeList.innerHTML = ''; 
+
+            checkedInputs.forEach((input, index) => {
+                const nameKo = input.dataset.name;
+                const nameZh = input.dataset.nameZh;
+                const currentName = isZh ? nameZh : nameKo;
+
+                const itemHtml = `
+                    <div class="route-item">
+                        <div class="route-number">${index + 1}</div>
+                        <div data-ko="${nameKo}" data-zh="${nameZh}">${currentName}</div>
+                    </div>
+                `;
+                routeList.insertAdjacentHTML('beforeend', itemHtml);
+
+                if (index < checkedInputs.length - 1) {
+                    routeList.insertAdjacentHTML('beforeend', `<div class="route-arrow">⬇️</div>`);
+                }
+            });
+
+            document.getElementById('route-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('route-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('route-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

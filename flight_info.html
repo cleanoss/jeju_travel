@@ -12,7 +12,7 @@
             --text-muted: #64748b;
             --purple-main: #5b21b6;
             --header-green: #eef6ec;
-            --header-orange: #fff7ed; /* 렌트카 헤더용 색상 */
+            --header-orange: #fff7ed;
             --orange-main: #ea580c;
         }
 
@@ -47,7 +47,7 @@
             font-weight: bold;
         }
 
-        /* 카드 공통 */
+        /* 카드 공통 및 토글 애니메이션 */
         .ticket-card {
             background-color: var(--card-bg);
             margin: 15px;
@@ -55,9 +55,9 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
         }
 
-        /* 카드 헤더 */
         .ticket-header {
             background-color: var(--header-green);
             padding: 15px 20px;
@@ -65,15 +65,60 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d1d5db;
+            cursor: pointer;
+            user-select: none;
         }
-        .ticket-header.rentcar {
-            background-color: var(--header-orange);
-        }
+        .ticket-header:active { background-color: #e4efe1; }
+        
+        .ticket-header.rentcar { background-color: var(--header-orange); }
+        .ticket-header.rentcar:active { background-color: #ffedd5; }
+
         .ticket-title {
             font-size: 1.15rem;
             font-weight: 800;
             color: #1f2937;
         }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-icon {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        /* 접힘(Collapsed) 상태 설정 */
+        .ticket-card.collapsed .toggle-icon {
+            transform: rotate(0deg); 
+        }
+        .ticket-card:not(.collapsed) .toggle-icon {
+            transform: rotate(180deg); 
+        }
+        .ticket-card.collapsed .card-content {
+            display: none;
+        }
+        .ticket-card.collapsed .ticket-header {
+            border-bottom: none;
+        }
+
+        /* 셔틀버스 버튼 */
+        .shuttle-btn {
+            background-color: var(--orange-main);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(234, 88, 12, 0.3);
+        }
+        .shuttle-btn:active { transform: scale(0.97); }
 
         /* 정보 행 (테이블 형태 구현) */
         .info-row {
@@ -81,9 +126,8 @@
             padding: 20px;
             border-bottom: 1px solid #f1f5f9;
         }
-        .info-row:last-child {
-            border-bottom: none;
-        }
+        .info-row:last-child { border-bottom: none; }
+        
         .info-label {
             width: 100px;
             font-size: 0.95rem;
@@ -118,31 +162,8 @@
             gap: 5px;
             flex-wrap: wrap;
         }
-        .highlight-code.rentcar-code {
-            color: var(--orange-main);
-        }
-        .pnr-sub {
-            font-size: 0.9rem;
-            font-weight: normal;
-            color: var(--text-main);
-        }
-
-        /* 셔틀버스 버튼 */
-        .shuttle-btn {
-            background-color: var(--orange-main);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 2px 5px rgba(234, 88, 12, 0.3);
-        }
-        .shuttle-btn:active {
-            transform: scale(0.97);
-        }
+        .highlight-code.rentcar-code { color: var(--orange-main); }
+        .pnr-sub { font-size: 0.9rem; font-weight: normal; color: var(--text-main); }
 
         /* 여정 텍스트 (보라색 화살표) */
         .route-title {
@@ -151,10 +172,7 @@
             color: var(--purple-main);
             margin-bottom: 15px;
         }
-        .route-title span.duration {
-            font-size: 0.95rem;
-            font-weight: normal;
-        }
+        .route-title span.duration { font-size: 0.95rem; font-weight: normal; }
 
         /* 타임라인 (세로 선 및 동그라미) */
         .timeline {
@@ -162,42 +180,20 @@
             padding-left: 18px;
         }
         .timeline::before {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 8px;
-            bottom: 25px;
-            width: 2px;
-            background-color: var(--purple-main);
+            content: ''; position: absolute; left: 5px; top: 8px; bottom: 25px; width: 2px; background-color: var(--purple-main);
         }
         .time-point {
-            position: relative;
-            margin-bottom: 25px;
+            position: relative; margin-bottom: 25px;
         }
-        .time-point:last-child {
-            margin-bottom: 0;
-        }
+        .time-point:last-child { margin-bottom: 0; }
         .time-point::before {
-            content: '';
-            position: absolute;
-            left: -18px;
-            top: 4px;
-            width: 12px;
-            height: 12px;
-            border: 2px solid var(--purple-main);
-            border-radius: 50%;
-            background-color: white;
-            z-index: 1;
+            content: ''; position: absolute; left: -18px; top: 4px; width: 12px; height: 12px; border: 2px solid var(--purple-main); border-radius: 50%; background-color: white; z-index: 1;
         }
         .airport-name {
-            font-size: 1.05rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-            color: #0f172a;
+            font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; color: #0f172a;
         }
         .flight-time {
-            font-size: 0.95rem;
-            color: #475569;
+            font-size: 0.95rem; color: #475569;
         }
     </style>
 </head>
@@ -211,39 +207,44 @@
 
     <!-- 가는편 항공정보 -->
     <div class="ticket-card">
-        <div class="ticket-header">
+        <div class="ticket-header" onclick="toggleCard(this)">
             <div class="ticket-title">🛫 가는편 항공정보</div>
+            <div class="header-right">
+                <div class="toggle-icon">▼</div>
+            </div>
         </div>
         
-        <div class="info-row">
-            <div class="info-label">예약번호</div>
-            <div class="info-value">
-                <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8025편</div>
-                <div class="highlight-code">KADQMX <span class="pnr-sub">(항공탑승시 필요)</span></div>
+        <div class="card-content">
+            <div class="info-row">
+                <div class="info-label">예약번호</div>
+                <div class="info-value">
+                    <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8025편</div>
+                    <div class="highlight-code">KADQMX <span class="pnr-sub">(항공탑승시 필요)</span></div>
+                </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">여행사번호</div>
-            <div class="info-value">
-                CA2633304254 <br>
-                <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+            <div class="info-row">
+                <div class="info-label">여행사번호</div>
+                <div class="info-value">
+                    CA2633304254 <br>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+                </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">항공여정</div>
-            <div class="info-value">
-                <div class="route-title">김포 ➔ 제주 <span class="duration">(총 1시간25분 소요)</span></div>
-                
-                <div class="timeline">
-                    <div class="time-point">
-                        <div class="airport-name">김포(GMP)</div>
-                        <div class="flight-time">2026.05.03(일) 07:05 출발</div>
-                    </div>
-                    <div class="time-point">
-                        <div class="airport-name">제주(CJU)</div>
-                        <div class="flight-time">2026.05.03(일) 08:30 도착</div>
+            <div class="info-row">
+                <div class="info-label">항공여정</div>
+                <div class="info-value">
+                    <div class="route-title">김포 ➔ 제주 <span class="duration">(총 1시간25분 소요)</span></div>
+                    
+                    <div class="timeline">
+                        <div class="time-point">
+                            <div class="airport-name">김포(GMP)</div>
+                            <div class="flight-time">2026.05.03(일) 07:05 출발</div>
+                        </div>
+                        <div class="time-point">
+                            <div class="airport-name">제주(CJU)</div>
+                            <div class="flight-time">2026.05.03(일) 08:30 도착</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -252,39 +253,44 @@
 
     <!-- 오는편 항공정보 -->
     <div class="ticket-card">
-        <div class="ticket-header">
+        <div class="ticket-header" onclick="toggleCard(this)">
             <div class="ticket-title">🛬 오는편 항공정보</div>
+            <div class="header-right">
+                <div class="toggle-icon">▼</div>
+            </div>
         </div>
         
-        <div class="info-row">
-            <div class="info-label">예약번호</div>
-            <div class="info-value">
-                <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8024편</div>
-                <div class="highlight-code">KC3BKJ <span class="pnr-sub">(항공탑승시 필요)</span></div>
+        <div class="card-content">
+            <div class="info-row">
+                <div class="info-label">예약번호</div>
+                <div class="info-value">
+                    <div class="airline-name"><span class="airline-logo">✈️</span> 에어부산 BX8024편</div>
+                    <div class="highlight-code">KC3BKJ <span class="pnr-sub">(항공탑승시 필요)</span></div>
+                </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">여행사번호</div>
-            <div class="info-value">
-                CA2633304254 <br>
-                <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+            <div class="info-row">
+                <div class="info-label">여행사번호</div>
+                <div class="info-value">
+                    CA2633304254 <br>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">(예약조회시 필요)</span>
+                </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">항공여정</div>
-            <div class="info-value">
-                <div class="route-title">제주 ➔ 김포 <span class="duration">(총 1시간20분 소요)</span></div>
-                
-                <div class="timeline">
-                    <div class="time-point">
-                        <div class="airport-name">제주(CJU)</div>
-                        <div class="flight-time">2026.05.06(수) 20:40 출발</div>
-                    </div>
-                    <div class="time-point">
-                        <div class="airport-name">김포(GMP)</div>
-                        <div class="flight-time">2026.05.06(수) 22:00 도착</div>
+            <div class="info-row">
+                <div class="info-label">항공여정</div>
+                <div class="info-value">
+                    <div class="route-title">제주 ➔ 김포 <span class="duration">(총 1시간20분 소요)</span></div>
+                    
+                    <div class="timeline">
+                        <div class="time-point">
+                            <div class="airport-name">제주(CJU)</div>
+                            <div class="flight-time">2026.05.06(수) 20:40 출발</div>
+                        </div>
+                        <div class="time-point">
+                            <div class="airport-name">김포(GMP)</div>
+                            <div class="flight-time">2026.05.06(수) 22:00 도착</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -293,57 +299,70 @@
 
     <!-- 렌트카 예약정보 -->
     <div class="ticket-card">
-        <div class="ticket-header rentcar">
+        <div class="ticket-header rentcar" onclick="toggleCard(this)">
             <div class="ticket-title">🚗 SK렌터카 예약정보</div>
-            <a href="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FetPgt1%2FbtsJ7P1sXFf%2FAAAAAAAAAAAAAAAAAAAAAGRGwPe7W07LYvPS-LsSiKNevxyzzzuwDdF-_tQw5EMi%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1780239599%26allow_ip%3D%26allow_referer%3D%26signature%3DN3Mdt3DIM%252FDSn1ER9tgsL1DWp4A%253D" target="_blank" class="shuttle-btn">🚌 셔틀시간표</a>
+            <div class="header-right">
+                <!-- 버튼 클릭 시 카드가 접히지 않고 링크만 열리도록 event.stopPropagation() 적용 -->
+                <a href="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FetPgt1%2FbtsJ7P1sXFf%2FAAAAAAAAAAAAAAAAAAAAAGRGwPe7W07LYvPS-LsSiKNevxyzzzuwDdF-_tQw5EMi%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1780239599%26allow_ip%3D%26allow_referer%3D%26signature%3DN3Mdt3DIM%252FDSn1ER9tgsL1DWp4A%253D" target="_blank" class="shuttle-btn" onclick="event.stopPropagation()">🚌 셔틀시간표</a>
+                <div class="toggle-icon">▼</div>
+            </div>
         </div>
         
-        <div class="info-row">
-            <div class="info-label">예약번호</div>
-            <div class="info-value">
-                <div class="highlight-code rentcar-code">260002369127</div>
-                <div style="font-size: 0.9rem; color: #334155; margin-top: 4px;">예약자: 박세환 고객님</div>
-            </div>
-        </div>
-
-        <div class="info-row">
-            <div class="info-label">대여차량</div>
-            <div class="info-value">
-                <b>토레스 가솔린</b><br>
-                <span style="font-size: 0.9rem; color: var(--text-muted);">(자차보험: 완전자차)</span>
-            </div>
-        </div>
-
-        <div class="info-row">
-            <div class="info-label">이용일정</div>
-            <div class="info-value">
-                <div style="margin-bottom: 6px;">
-                    <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">대여</span>
-                    <b>26.05.03 (일) 09:00</b>
-                </div>
-                <div>
-                    <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">반납</span>
-                    <b>26.05.06 (수) 19:00</b>
+        <div class="card-content">
+            <div class="info-row">
+                <div class="info-label">예약번호</div>
+                <div class="info-value">
+                    <div class="highlight-code rentcar-code">260002369127</div>
+                    <div style="font-size: 0.9rem; color: #334155; margin-top: 4px;">예약자: 박세환 고객님</div>
                 </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">대여지점</div>
-            <div class="info-value">
-                <b>제주지점</b><br>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">제주시 용담이동 730-10</span>
+            <div class="info-row">
+                <div class="info-label">대여차량</div>
+                <div class="info-value">
+                    <b>토레스 가솔린</b><br>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">(자차보험: 완전자차)</span>
+                </div>
             </div>
-        </div>
 
-        <div class="info-row">
-            <div class="info-label">셔틀탑승</div>
-            <div class="info-value">
-                제주공항 셔틀버스<br>
-                <b style="color: var(--orange-main);">1구역 2승차장</b>
+            <div class="info-row">
+                <div class="info-label">이용일정</div>
+                <div class="info-value">
+                    <div style="margin-bottom: 6px;">
+                        <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">대여</span>
+                        <b>26.05.03 (일) 09:00</b>
+                    </div>
+                    <div>
+                        <span style="display: inline-block; width: 40px; color: var(--text-muted); font-size: 0.9rem;">반납</span>
+                        <b>26.05.06 (수) 19:00</b>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">대여지점</div>
+                <div class="info-value">
+                    <b>제주지점</b><br>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">제주시 용담이동 730-10</span>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">셔틀탑승</div>
+                <div class="info-value">
+                    제주공항 셔틀버스<br>
+                    <b style="color: var(--orange-main);">1구역 2승차장</b>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- 스크립트: 아코디언 토글 기능 -->
+    <script>
+        function toggleCard(headerElement) {
+            const card = headerElement.closest('.ticket-card');
+            card.classList.toggle('collapsed');
+        }
+    </script>
 </body>
 </html>

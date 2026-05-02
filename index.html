@@ -23,7 +23,52 @@
             background-color: var(--bg-color); 
             color: var(--text-main); 
             padding-bottom: 80px; 
+            /* 스플래시 화면이 떠있을 때 스크롤 방지 */
+            overflow: hidden; 
         }
+
+        /* ================= 스플래시 화면 (앱 인트로) ================= */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--primary); /* 메인 테마색 배경 */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out; /* 페이드아웃 효과 */
+        }
+        
+        .splash-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-align: center;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .splash-footer {
+            position: absolute;
+            bottom: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            animation: fadeIn 1s ease-in 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            to { opacity: 0.8; }
+        }
+        /* ========================================================= */
 
         /* App Header: 제목과 버튼을 좌우로 나란히 배치 */
         header {
@@ -78,16 +123,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .util-btn:active { transform: scale(0.98); }
-
-        /* 날씨 버튼: 화이트톤으로 깔끔하게 변경 */
-        .weather-btn {
-            background: #ffffff;
-            color: var(--text-main);
-            padding: 15px;
-            font-size: 1.05rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
 
         .split-btn-wrap {
             display: flex;
@@ -364,6 +399,15 @@
 </head>
 <body>
 
+    <!-- 앱 스플래시 화면 -->
+    <div id="splash-screen">
+        <div class="splash-logo">
+            SHP<br>
+            <span style="font-size: 1.5rem; font-weight: 500;">by 제주</span>
+        </div>
+        <div class="splash-footer">MADE BY SEHWAN PARK</div>
+    </div>
+
     <!-- 헤더 영역 -->
     <header>
         <div class="header-title" data-ko="SHP <span style='font-size: 0.85rem; font-weight: 500;'>by 제주</span>" data-zh="SHP <span style='font-size: 0.85rem; font-weight: 500;'>by 濟州</span>">
@@ -376,13 +420,11 @@
 
     <div class="container">
         
-      <!-- 상단 유틸 버튼 영역 (날씨 / 항공권·렌트카 반반 분할) -->
+        <!-- 상단 유틸 버튼 영역 (날씨 / 항공권·렌트카 반반 분할) -->
         <div class="split-btn-wrap" style="margin-bottom: 12px;">
-            <!-- 실시간 네이버 날씨 확인 버튼 -->
             <a href="https://search.naver.com/search.naver?query=날씨" target="_blank" class="util-btn split-btn" style="background: #ffffff; color: var(--text-main); border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); font-size: 0.95rem;">
                 <span data-ko="🌤️ 실시간 날씨" data-zh="🌤️ 實時天氣">🌤️ 실시간 날씨</span>
             </a>
-            <!-- 항공권 · 렌트카 정보 버튼 (새 탭/페이지로 이동) -->
             <a href="flight_info.html" class="util-btn split-btn" style="background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; box-shadow: 0 2px 10px rgba(0,0,0,0.05); font-size: 0.95rem;">
                 <span data-ko="✈️ 항공권 · 🚗 렌트카" data-zh="✈️ 航班 · 🚗 租車">✈️ 항공권 · 🚗 렌트카</span>
             </a>
@@ -649,7 +691,7 @@
             <div class="card-header" onclick="toggleCard(this)">
                 <div>
                     <div class="day-info" data-ko="3일차 (5/5 일)" data-zh="第3天 (5/5 日)">3일차 (5/5 일)</div>
-                    <div class="region-info" data-ko="중문 ~ 안덕 ~ 서부" data-zh="中文 ~ 安德 ~ 西部">중문 ~ 안덕 ~ 서부</div>
+                    <div class="region-info" data-ko="중문 ~ 안덕 ~ 서부" data-zh="中文 ~ 安德 ~ 서부">중문 ~ 안덕 ~ 서부</div>
                 </div>
                 <div class="header-right">
                     <div class="weather-icon">☀️</div>
@@ -725,8 +767,8 @@
                             <a href="https://map.naver.com/v5/search/카페루시아" target="_blank" class="map-link cafe" data-ko="카페 루시아 (오션뷰/젤라또)" data-zh="Cafe Lucia (海景/義式冰淇淋)">카페 루시아 (오션뷰/젤라또)</a>
                         </div>
                         <div class="tag-wrap">
-                            <input type="checkbox" class="route-check" data-name="중문별장" data-name-zh="中文별장" data-loc="74">
-                            <a href="https://map.naver.com/v5/search/중문별장" target="_blank" class="map-link cafe" data-ko="중문별장 (커피/정원뷰)" data-zh="中文별장 (커피/庭園景)">중문별장 (커피/정원뷰)</a>
+                            <input type="checkbox" class="route-check" data-name="중문별장" data-name-zh="中文別墅" data-loc="74">
+                            <a href="https://map.naver.com/v5/search/중문별장" target="_blank" class="map-link cafe" data-ko="중문별장 (커피/정원뷰)" data-zh="中文別墅 (咖啡/庭園景)">중문별장 (커피/정원뷰)</a>
                         </div>
                         <div class="tag-wrap">
                             <input type="checkbox" class="route-check" data-name="우유부단" data-name-zh="牛奶不丹" data-loc="89">
@@ -1119,6 +1161,20 @@
 
     <!-- 스크립트 -->
     <script>
+        // 스플래시 화면 제어 (1.5초 후 사라짐)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                
+                // CSS transition 시간(0.5초) 후 요소를 완전히 숨기고 스크롤 복구
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    document.body.style.overflow = 'auto'; 
+                }, 500); 
+            }, 1500); 
+        });
+
         let isZh = false;
         
         function toggleLanguage() {

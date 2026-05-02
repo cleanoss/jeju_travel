@@ -12,7 +12,6 @@
             --text-muted: #64748b;
             --purple-main: #5b21b6;
             --header-green: #eef6ec;
-            --btn-dark: #3b4554;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,7 +60,6 @@
             background-color: var(--header-green);
             padding: 15px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d1d5db;
         }
@@ -69,16 +67,6 @@
             font-size: 1.15rem;
             font-weight: 800;
             color: #1f2937;
-        }
-        .cancel-btn {
-            background-color: var(--btn-dark);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
         }
 
         /* 정보 행 (테이블 형태 구현) */
@@ -198,7 +186,6 @@
     <div class="ticket-card">
         <div class="ticket-header">
             <div class="ticket-title">가는편 항공정보</div>
-            <button class="cancel-btn">예약취소</button>
         </div>
         
         <div class="info-row">
@@ -240,7 +227,6 @@
     <div class="ticket-card">
         <div class="ticket-header">
             <div class="ticket-title">오는편 항공정보</div>
-            <button class="cancel-btn">예약취소</button>
         </div>
         
         <div class="info-row">

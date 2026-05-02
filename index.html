@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>제주 가족여행 스마트 가이드</title>
+    <title>SHP by 제주 - 스마트 가이드</title>
     <style>
         :root {
             --bg-color: #f5f7fb;
@@ -40,14 +40,15 @@
         }
 
         .header-title {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.35rem; /* 브랜드 네임처럼 보이게 폰트 크기 확대 */
+            font-weight: 800;
             line-height: 1.4;
-            flex: 1; /* 남은 공간을 제목이 차지하게 하여 버튼과 안 겹치게 함 */
+            flex: 1;
+            letter-spacing: 0.5px;
         }
 
         .header-btn-wrap {
-            flex-shrink: 0; /* 버튼 크기가 줄어들지 않게 고정 */
+            flex-shrink: 0;
             margin-left: 10px;
         }
 
@@ -78,13 +79,15 @@
         }
         .util-btn:active { transform: scale(0.98); }
 
+        /* 날씨 버튼: 화이트톤으로 깔끔하게 변경 */
         .weather-btn {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: white;
+            background: #ffffff;
+            color: var(--text-main);
             padding: 15px;
             font-size: 1.05rem;
             margin-bottom: 12px;
-            box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .split-btn-wrap {
@@ -163,7 +166,6 @@
             transition: transform 0.3s ease;
         }
 
-        /* 카드가 접혔을 때의 스타일 */
         .card.collapsed .toggle-icon {
             transform: rotate(0deg); 
         }
@@ -365,8 +367,8 @@
 
     <!-- 헤더 영역 -->
     <header>
-        <div class="header-title" data-ko="✈️ 주식고수 박세환의<br>3박 4일 제주도 가족여행" data-zh="✈️ 股票高手朴世桓的<br>4天3夜 濟州島家族旅行">
-            ✈️ 주식고수 박세환의<br>3박 4일 제주도 가족여행
+        <div class="header-title" data-ko="SHP <span style='font-size: 0.85rem; font-weight: 500;'>by 제주</span>" data-zh="SHP <span style='font-size: 0.85rem; font-weight: 500;'>by 濟州</span>">
+            SHP <span style="font-size: 0.85rem; font-weight: 500;">by 제주</span>
         </div>
         <div class="header-btn-wrap">
             <button id="lang-btn" onclick="toggleLanguage()">🇹🇼 中文</button>
@@ -377,7 +379,7 @@
         
         <!-- 실시간 네이버 날씨 확인 버튼 -->
         <a href="https://search.naver.com/search.naver?query=날씨" target="_blank" class="util-btn weather-btn">
-            <span data-ko="🌤️ 현재 날씨" data-zh="🌤️ 目前天氣">🌤️ 현재 날씨</span>
+            <span data-ko="🌤️ 실시간 날씨 확인" data-zh="🌤️ 實時天氣確認">🌤️ 실시간 날씨 확인</span>
         </a>
 
         <!-- 일출/일몰 및 물때 확인 버튼 (반반 나누기) -->
